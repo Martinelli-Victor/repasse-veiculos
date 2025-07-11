@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum VehicleStatus {
+  DRAFT
+  ACTIVE
+  UNDER_OFFER
+  SOLD
+  CANCELLED
+}
+
+enum PlanType {
+  BASIC
+  INTERMEDIATE
+  PREMIUM
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+// Models
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  vehicles      Vehicle[] @relation("UserVehicles")
+  bids          Bid[]     @relation("UserBids")
+  questions     Question[] @relation("UserQuestions")
+  answers       Answer[]   @relation("UserAnswers")
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Vehicle {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  brand       String
+  model       String
+  year        Int
+  price       Float
+  mileage     Int
+  color       String
+  transmission String
+  fuel        String
+  photos      Photo[]
+  status      VehicleStatus @default(DRAFT)
+  minBid      Float
+  targetValue Float
+  hasDebt     Boolean       @default(false)
+  debtValue   Float?
+  hasReport   Boolean       @default(false)
+  reportUrl   String?
+  planType    PlanType      @default(BASIC)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  userId      String
+
+  // Relations
+  user        User          @relation("UserVehicles", fields: [userId], references: [id])
+  bids        Bid[]         @relation("VehicleBids")
+  questions   Question[]    @relation("VehicleQuestions")
+
+  @@map("vehicles")
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  url       String
+  order     Int
+  vehicleId String
+  createdAt DateTime @default(now())
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@map("photos")
+}
+
+model Bid {
+  id        String    @id @default(cuid())
+  value     Float
+  status    BidStatus @default(PENDING)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    String
+  vehicleId String
+
+  // Relations
+  user      User      @relation("UserBids", fields: [userId], references: [id])
+  vehicle   Vehicle   @relation("VehicleBids", fields: [vehicleId], references: [id])
+
+  @@map("bids")
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  userId    String
+  vehicleId String
+
+  // Relations
+  user      User     @relation("UserQuestions", fields: [userId], references: [id])
+  vehicle   Vehicle  @relation("VehicleQuestions", fields: [vehicleId], references: [id])
+  answers   Answer[] @relation("QuestionAnswers")
+
+  @@map("questions")
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  userId     String
+  questionId String
+
+  // Relations
+  user      User     @relation("UserAnswers", fields: [userId], references: [id])
+  question  Question @relation("QuestionAnswers", fields: [questionId], references: [id])
+
+  @@map("answers")
+}
