@@ -1,6 +1,9 @@
+"use client"
+
 import Image from "next/image"
-import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { FileText, MapPin, Star } from "lucide-react"
 
 interface VehicleCardProps {
   id: string
@@ -8,9 +11,8 @@ interface VehicleCardProps {
   year: string
   mileage: number
   price: number
-  imageUrl?: string
-  hasReport?: boolean
-  planType?: "BASIC" | "INTERMEDIATE" | "PREMIUM"
+  hasReport: boolean
+  planType: "BASIC" | "INTERMEDIATE" | "PREMIUM"
 }
 
 export function VehicleCard({
@@ -19,56 +21,67 @@ export function VehicleCard({
   year,
   mileage,
   price,
-  imageUrl,
   hasReport,
   planType,
 }: VehicleCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden group">
-      <div className="relative h-48 bg-gray-200">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            Sem imagem
-          </div>
-        )}
-        {planType === "PREMIUM" && (
-          <div className="absolute top-2 right-2 bg-navy-600 text-white px-2 py-1 rounded text-xs">
-            Top Repasse
-          </div>
-        )}
-        {hasReport && (
-          <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded text-xs">
-            Com Laudo
-          </div>
-        )}
+    <div className="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+      {/* Imagem */}
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <Image
+          src="https://via.placeholder.com/400x300"
+          alt={title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+        >
+          <Star className="h-5 w-5" />
+        </Button>
       </div>
+
+      {/* Conteúdo */}
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2 group-hover:text-navy-600 transition-colors">
-          {title}
-        </h3>
-        <p className="text-gray-600 text-sm mb-2">
-          {year} • {mileage.toLocaleString("pt-BR")} km
-        </p>
-        <div className="flex justify-between items-center">
-          <span className="text-2xl font-bold text-navy-600">
+        {/* Título e Badges */}
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="font-semibold text-gray-900 line-clamp-2">{title}</h3>
+          <div className="flex flex-col items-end gap-1">
+            {planType === "PREMIUM" && (
+              <Badge variant="premium">Premium</Badge>
+            )}
+            {hasReport && (
+              <Badge variant="outline" className="gap-1">
+                <FileText className="h-3 w-3" />
+                Laudo
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        {/* Informações */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">{year}</span>
+            <span className="text-gray-600">{mileage.toLocaleString()} km</span>
+          </div>
+          <div className="flex items-center gap-1 text-sm text-gray-600">
+            <MapPin className="h-4 w-4" />
+            <span>São Paulo - SP</span>
+          </div>
+        </div>
+
+        {/* Preço */}
+        <div className="mt-4">
+          <span className="text-xs text-gray-600">Preço</span>
+          <div className="text-2xl font-bold text-gray-900">
             {price.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}
-          </span>
-          <Link href={`/veiculos/${id}`}>
-            <Button variant="outline" size="sm">
-              Ver Detalhes
-            </Button>
-          </Link>
+          </div>
         </div>
       </div>
     </div>
