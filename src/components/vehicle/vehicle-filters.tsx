@@ -3,35 +3,8 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { Car, DollarSign, MapPin, Image, Truck, RefreshCw } from "lucide-react"
 import { useState } from "react"
-
-interface FilterSectionProps {
-  title: string
-  children: React.ReactNode
-  defaultExpanded?: boolean
-}
-
-function FilterSection({ title, children, defaultExpanded = true }: FilterSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-
-  return (
-    <div className="border-b border-gray-200">
-      <button
-        className="flex items-center justify-between w-full p-4 text-left"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <h4 className="font-medium text-gray-900">{title}</h4>
-        {isExpanded ? (
-          <ChevronUp className="h-4 w-4 text-gray-500" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-gray-500" />
-        )}
-      </button>
-      {isExpanded && <div className="p-4 pt-0">{children}</div>}
-    </div>
-  )
-}
 
 export function VehicleFilters() {
   const [priceRange, setPriceRange] = useState({ min: "", max: "" })
@@ -55,15 +28,144 @@ export function VehicleFilters() {
         </Button>
       </div>
 
-      <FilterSection title="Localização">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Localização</h4>
         <Input
           type="text"
           placeholder="Digite sua cidade ou estado"
           className="mb-2"
         />
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Vendedor">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">O que é interessante para você?</h4>
+        <div className="space-y-3">
+          <div className="flex items-center">
+            <Checkbox id="mega-feirao" />
+            <label htmlFor="mega-feirao" className="ml-2 text-sm text-gray-700">
+              Mega Feirão
+            </label>
+          </div>
+          <div className="flex items-center">
+            <Checkbox id="vistoriado" />
+            <label htmlFor="vistoriado" className="ml-2 text-sm text-gray-700">
+              Vistoriado
+            </label>
+          </div>
+          <div className="flex items-center">
+            <Checkbox id="visao-360" />
+            <label htmlFor="visao-360" className="ml-2 text-sm text-gray-700">
+              Visão 360°
+            </label>
+          </div>
+          <div className="flex items-center">
+            <Checkbox id="super-preco" />
+            <label htmlFor="super-preco" className="ml-2 text-sm text-gray-700">
+              Super preço
+            </label>
+          </div>
+          <div className="flex items-center">
+            <Checkbox id="troca-com-troco" />
+            <label htmlFor="troca-com-troco" className="ml-2 text-sm text-gray-700">
+              Troca com troco
+            </label>
+          </div>
+          <div className="flex items-center">
+            <Checkbox id="car-delivery" />
+            <label htmlFor="car-delivery" className="ml-2 text-sm text-gray-700">
+              Car Delivery
+            </label>
+          </div>
+          <div className="flex items-center">
+            <Checkbox id="apenas-fotos" />
+            <label htmlFor="apenas-fotos" className="ml-2 text-sm text-gray-700">
+              Apenas anúncios com foto
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Novo/Usado</h4>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Checkbox id="novos" />
+              <label htmlFor="novos" className="ml-2 text-sm text-gray-700">
+                Novos
+              </label>
+            </div>
+            <span className="text-sm text-gray-500">(21.712)</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Checkbox id="usados" />
+              <label htmlFor="usados" className="ml-2 text-sm text-gray-700">
+                Usados
+              </label>
+            </div>
+            <span className="text-sm text-gray-500">(163.140)</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Faixa de Preço</h4>
+        <div className="grid grid-cols-2 gap-2">
+          <Input
+            type="text"
+            placeholder="Mínimo"
+            value={priceRange.min}
+            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+          />
+          <Input
+            type="text"
+            placeholder="Máximo"
+            value={priceRange.max}
+            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Ano</h4>
+        <div className="grid grid-cols-2 gap-2">
+          <Input
+            type="text"
+            placeholder="Mínimo"
+            value={yearRange.min}
+            onChange={(e) => setYearRange({ ...yearRange, min: e.target.value })}
+          />
+          <Input
+            type="text"
+            placeholder="Máximo"
+            value={yearRange.max}
+            onChange={(e) => setYearRange({ ...yearRange, max: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Quilometragem</h4>
+        <div className="grid grid-cols-2 gap-2">
+          <Input
+            type="text"
+            placeholder="Mínimo"
+            value={kmRange.min}
+            onChange={(e) => setKmRange({ ...kmRange, min: e.target.value })}
+          />
+          <Input
+            type="text"
+            placeholder="Máximo"
+            value={kmRange.max}
+            onChange={(e) => setKmRange({ ...kmRange, max: e.target.value })}
+          />
+        </div>
+      </div>
+
+      {/* Novos filtros */}
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Vendedor</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="loja" />
@@ -84,9 +186,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Itens do veículo">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Itens do veículo</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="airbag" />
@@ -119,9 +222,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Câmbio">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Câmbio</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="manual" />
@@ -142,9 +246,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Combustível">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Combustível</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="gasolina" />
@@ -177,9 +282,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Final da placa">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Final da placa</h4>
         <div className="grid grid-cols-5 gap-2">
           {[0,1,2,3,4,5,6,7,8,9].map((numero) => (
             <Button
@@ -191,9 +297,10 @@ export function VehicleFilters() {
             </Button>
           ))}
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Blindagem">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Blindagem</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="blindado" />
@@ -208,9 +315,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Cor">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Cor</h4>
         <div className="grid grid-cols-2 gap-2">
           <div className="flex items-center">
             <Checkbox id="preto" />
@@ -249,9 +357,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Carroceria">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Carroceria</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="hatch" />
@@ -278,9 +387,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Leilão">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Leilão</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="em-leilao" />
@@ -295,9 +405,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Categoria">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Categoria</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="novo" />
@@ -318,9 +429,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Ofertas">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Ofertas</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="pronta-entrega" />
@@ -335,9 +447,10 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
+      </div>
 
-      <FilterSection title="Características">
+      <div className="p-4 border-b border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3">Características</h4>
         <div className="space-y-2">
           <div className="flex items-center">
             <Checkbox id="unico-dono" />
@@ -364,58 +477,7 @@ export function VehicleFilters() {
             </label>
           </div>
         </div>
-      </FilterSection>
-
-      <FilterSection title="Faixa de Preço">
-        <div className="grid grid-cols-2 gap-2">
-          <Input
-            type="text"
-            placeholder="Mínimo"
-            value={priceRange.min}
-            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-          />
-          <Input
-            type="text"
-            placeholder="Máximo"
-            value={priceRange.max}
-            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-          />
-        </div>
-      </FilterSection>
-
-      <FilterSection title="Ano">
-        <div className="grid grid-cols-2 gap-2">
-          <Input
-            type="text"
-            placeholder="Mínimo"
-            value={yearRange.min}
-            onChange={(e) => setYearRange({ ...yearRange, min: e.target.value })}
-          />
-          <Input
-            type="text"
-            placeholder="Máximo"
-            value={yearRange.max}
-            onChange={(e) => setYearRange({ ...yearRange, max: e.target.value })}
-          />
-        </div>
-      </FilterSection>
-
-      <FilterSection title="Quilometragem">
-        <div className="grid grid-cols-2 gap-2">
-          <Input
-            type="text"
-            placeholder="Mínimo"
-            value={kmRange.min}
-            onChange={(e) => setKmRange({ ...kmRange, min: e.target.value })}
-          />
-          <Input
-            type="text"
-            placeholder="Máximo"
-            value={kmRange.max}
-            onChange={(e) => setKmRange({ ...kmRange, max: e.target.value })}
-          />
-        </div>
-      </FilterSection>
+      </div>
     </div>
   )
 } 
